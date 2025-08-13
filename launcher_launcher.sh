@@ -2,10 +2,15 @@
 
 # A self-installing script to launch... launchers!
 #
+# Okay, so it "installs" standalone executables and creates an entry for
+# launchers to find them.
+#
 # If run without arguments, it will install itself to the user's local bin and
 # create a desktop entry for application menus.
 #
-# If run with arguments, it will execute the main script logic.
+# If run with arguments, it will execute the main script logic. You should be
+# able to create a shortcut to this somewhere and then drag and drop files onto
+# it to install them.
 
 # --- Configuration ---
 readonly SCRIPT_NAME=$(basename "$0")
@@ -40,7 +45,7 @@ Version=1.0
 Type=Application
 Name=Launcher Launcher
 Comment=Installs other standalone programs as desktop applications for standard launchers to find
-Exec=$INSTALL_PATH %U
+Exec=$INSTALL_PATH %F
 Icon=utilities-terminal
 Terminal=false
 Categories=Utility;
@@ -48,8 +53,22 @@ EOF
 
     echo
     echo "--- Installation Complete ---"
-    echo "You can now find 'Launcher Launcher' in your application menu."
-    echo "You may safely delete the original script you ran: $(realpath "$0")"
+    echo "-> You can now find 'Launcher Launcher' in your application menu."
+    echo "-> You may safely delete the original script you ran: $(realpath "$0")"
+
+    # Ask to create a desktop shortcut for drag-and-drop functionality
+    echo
+    read -p "Create a shortcut on your Desktop for easy drag-and-drop? (y/N) " -n 1 -r
+    echo # Move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [ -d "$HOME/Desktop" ]; then
+            # Use a more descriptive name for the shortcut
+            ln -s "$INSTALL_PATH" "$HOME/Desktop/Install Application"
+            echo "-> Shortcut created at '$HOME/Desktop/Install Application'."
+        else
+            echo "-> Could not find '$HOME/Desktop'. Skipping shortcut creation."
+        fi
+    fi
     exit 0
 fi
 
