@@ -105,13 +105,14 @@ Version=1.0
 Type=Application
 Name=$APP_NAME
 Comment=Custom installed application: $APP_NAME
-Exec=$APP_INSTALL_PATH %U
+Exec=$APP_INSTALL_PATH %F
 Icon=application-x-executable
 Terminal=false
 Categories=Utility;
 EOF
-    echo "-> Created desktop entry at $APP_DESKTOP_FILE_PATH"
     echo "Installation of '$APP_NAME' complete."
+    echo "-> To customize its name, icon, etc., you can edit the launcher file:"
+    echo "   $APP_DESKTOP_FILE_PATH"
     echo
 done
 
