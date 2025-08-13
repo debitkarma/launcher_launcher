@@ -2,11 +2,15 @@
 
 This is a launcher for creating/installing apps so your launcher can find them.
 
-It's designed for beginners so they can essentially drag and drop standalone executables onto this and it will "install" them relatively easily, and point them to the files they'll want to edit manually.
+It's designed for beginners so they can essentially drag and drop standalone executables (or AppImage files) onto this and it will "install" them relatively easily, and point them to the files they'll want to edit manually.
 
 ## Usage
 
-If you double-click this, it should run and install itself in the appropriate spot.
+If you double-click this, it should run and install itself in the appropriate spot. It'll ask you if you want to create a shortcut in your home folder. If you do, you can just drag and drop standalone apps or AppImage files and it will (ideally) handle the rest for you.
+
+You could also run it in the command line with the `launcher_launcher` command and then provide any number of paths to executables as arguments for the same effect.
+
+It should also appear in your launcher and depending on which desktop environment you have, you could do the drag and drop thing there.
 
 # Learning Time!!
 
