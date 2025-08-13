@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # A self-installing script to launch... launchers!
+# Version: 0.1.0
 #
 # Okay, so it "installs" standalone executables and creates an entry for
 # launchers to find them.
@@ -13,6 +14,7 @@
 # it to install them.
 
 # --- Configuration ---
+readonly SCRIPT_VERSION="0.1.0"
 readonly SCRIPT_NAME=$(basename "$0")
 readonly INSTALL_DIR="$HOME/.local/bin"
 readonly APPS_DIR="$HOME/.local/share/applications"
@@ -41,7 +43,7 @@ if [ "$#" -eq 0 ]; then
     echo "-> Creating desktop entry at $DESKTOP_FILE_PATH"
     cat << EOF > "$DESKTOP_FILE_PATH"
 [Desktop Entry]
-Version=1.0
+Version=$SCRIPT_VERSION
 Type=Application
 Name=Launcher Launcher
 Comment=Installs other standalone programs as desktop applications for standard launchers to find
