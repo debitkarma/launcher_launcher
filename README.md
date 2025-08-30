@@ -8,9 +8,17 @@ It's designed for beginners so they can essentially drag and drop standalone exe
 
 If you double-click this, it should run and install itself in the appropriate spot. It'll ask you if you want to create a shortcut in your home folder. If you do, you can just drag and drop standalone apps or AppImage files and it will (ideally) handle the rest for you.
 
-You could also run it in the command line with the `launcher_launcher` command and then provide any number of paths to executables as arguments for the same effect.
+You could also run it in the command line with the `launcher_launcher` command and then provide any number of paths to files as arguments for the same effect. If the files are not executable, it will prompt you if you'd like to make it executable. If you hit `y`, it will continue to install the file. If you hit anything else, it will skip the file and move on to the next one.
 
 It should also appear in your launcher and depending on which desktop environment you have, you could do the drag and drop thing there.
+
+## Example
+
+```
+launcher_launcher ~/Downloads/neofetch7.1.0-x86_64.AppImage ~/riffscan ~/src/scripts/test_script.sh
+```
+
+The above example will install `neofetch` (an AppImage file), a program named `riffscan`, and a script named `test_script.sh` one after the other.
 
 # Learning Time!!
 
@@ -26,13 +34,15 @@ Most launchers need to find a `.desktop` file associated with a program in order
 
 Generally, if you were to do this manually, what you want to do is:
 
-1. Find the executable program you downloaded and want to see in your launcher.
+1. Find the executable program you downloaded and want to see in your launcher. Make sure it's executable. If it's not, you can generally do one of the following:
+    * Right click file > Properties > Permissions > Allow file to run like a program
+    * (in terminal) `chmod +x file`
 
-2. (Optional but recommended) Move it to the `~/.local/bin/` directory. Why? Because it's in your PATH, which is where the command line looks for commands that are programs. The particular folder `~/.local/bin/` is where random programs for your user are generally found by convention. It's a loose standard, so I usually recommend following it. It's not strictly necessary.
+1. (Optional but recommended) Move it to the `~/.local/bin/` directory. Why? Because it's in your PATH, which is where the command line looks for commands that are programs. The particular folder `~/.local/bin/` is where random programs for your user are generally found by convention. It's a loose standard, so I usually recommend following it. It's not strictly necessary.
 
-3. (Optional) Find a suitable icon for this program, or a pick a suitable system icon.
+1. (Optional) Find a suitable icon for this program, or a pick a suitable system icon.
 
-4. Create a launcher file in `~/.local/share/applications/` for your application. Refer the Arch User Wiki link above for specifics, but you want to create a text file that's named `Program_Name.desktop` in this folder. This file should have contents that are outlined for your convenience below (or you can just look at the Arch User Wiki link above).
+1. Create a launcher file in `~/.local/share/applications/` for your application. Refer the Arch User Wiki link above for specifics, but you want to create a text file that's named `Program_Name.desktop` in this folder. This file should have contents that are outlined for your convenience below (or you can just look at the Arch User Wiki link above).
 
 ## Anatomy of a .desktop File
 
