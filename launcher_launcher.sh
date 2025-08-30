@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # A self-installing script to launch... launchers!
-# Version: 0.3.0
+# Version: 0.3.1
 #
 # Okay, so it "installs" standalone executables and creates an entry for
 # launchers to find them.
@@ -14,7 +14,7 @@
 # it to install them.
 
 # --- Configuration ---
-readonly SCRIPT_VERSION="0.1.0"
+readonly SCRIPT_VERSION="0.3.1"
 readonly SCRIPT_NAME=$(basename "$0")
 readonly INSTALL_DIR="$HOME/.local/bin"
 readonly APPS_DIR="$HOME/.local/share/applications"
@@ -38,20 +38,20 @@ if [ "$#" -eq 0 ]; then
         echo
         case "$REPLY" in
             [Rr])
-                # Compare version lines (3rd line) between current script and installed script
-                CURRENT_VERSION_LINE=$(sed -n '3p' "$0")
-                if [ -f "$INSTALL_PATH" ]; then
-                    INSTALLED_VERSION_LINE=$(sed -n '3p' "$INSTALL_PATH")
+                # Compare version numbers between current script and installed script
+                INSTALLED_VERSION_LINE=$(grep '^readonly SCRIPT_VERSION=' "$INSTALL_PATH" 2>/dev/null)
+                if [[ $INSTALLED_VERSION_LINE =~ ^readonly\ SCRIPT_VERSION=\"([^\"]+)\" ]]; then
+                    INSTALLED_VERSION="${BASH_REMATCH[1]}"
                 else
-                    INSTALLED_VERSION_LINE=""
+                    INSTALLED_VERSION="unknown"
                 fi
 
-                if [ "$CURRENT_VERSION_LINE" = "$INSTALLED_VERSION_LINE" ]; then
+                if [ "$SCRIPT_VERSION" = "$INSTALLED_VERSION" ]; then
                     echo "-> Version is unchanged. Reinstalling."
                 else
                     echo "-> Detected version change:"
-                    echo "   Installed: $INSTALLED_VERSION_LINE"
-                    echo "   New:       $CURRENT_VERSION_LINE"
+                    echo "   Installed: $INSTALLED_VERSION"
+                    echo "   New:       $SCRIPT_VERSION"
                     echo "-> Changing script and .desktop file."
                 fi
                 ;;
@@ -182,7 +182,7 @@ Terminal=false
 Categories=Utility;
 EOF
     echo "Installation of '$APP_NAME' complete."
-    echo "-> To customize its name, icon, etc., you can edit the launcher file:"
+    echo "-> To customize its name, version number, icon, etc., you can edit the launcher file:"
     echo "   $APP_DESKTOP_FILE_PATH"
     echo
 done
