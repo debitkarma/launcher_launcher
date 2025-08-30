@@ -79,11 +79,21 @@ fi
 # It iterates through each argument, treating it as an executable to install.
 echo "--- Application Installer Mode ---"
 
-for app_path in "$@"; do
-    # Check if the provided path is a valid, executable file
-    if [ ! -f "$app_path" ] || [ ! -x "$app_path" ]; then
-        echo "Warning: '$app_path' is not a valid executable file. Skipping."
+    if [ ! -f "$app_path" ]; then
+        echo "Warning: '$app_path' is not a valid file. Skipping."
         continue
+    fi
+
+    if [ ! -x "$app_path" ]; then
+        read -p "'$app_path' is not executable. Mark as executable and continue? (y/N) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            chmod +x "$app_path"
+            echo "-> Marked '$app_path' as executable."
+        else
+            echo "Skipping '$app_path'."
+            continue
+        fi
     fi
 
     APP_NAME=$(basename "$app_path")
