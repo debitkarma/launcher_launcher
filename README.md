@@ -8,6 +8,8 @@ It's designed for beginners so they can essentially drag and drop standalone exe
 
 If you double-click this, it should run and install itself in the appropriate spot. It'll ask you if you want to create a shortcut in your home folder. If you do, you can just drag and drop standalone apps or AppImage files and it will (ideally) handle the rest for you.
 
+If you've already installed it, it'll ask if you want to reinstall/upgrade (assuming you downloaded a new version of the script), uninstall, or show instructions.
+
 You could also run it in the command line with the `launcher_launcher` command and then provide any number of paths to files as arguments for the same effect. If the files are not executable, it will prompt you if you'd like to make it executable. If you hit `y`, it will continue to install the file. If you hit anything else, it will skip the file and move on to the next one.
 
 It should also appear in your launcher and depending on which desktop environment you have, you could do the drag and drop thing there.

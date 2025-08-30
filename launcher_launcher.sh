@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # A self-installing script to launch... launchers!
-# Version: 0.1.0
+# Version: 0.3.0
 #
 # Okay, so it "installs" standalone executables and creates an entry for
 # launchers to find them.
@@ -25,9 +25,64 @@ readonly DESKTOP_FILE_NAME="${SCRIPT_NAME%.sh}.desktop"
 readonly DESKTOP_FILE_PATH="$APPS_DIR/$DESKTOP_FILE_NAME"
 
 # --- Self-Installation Logic ---
-# If the script is run without any arguments, perform the installation.
+# If the scipt is run without arguments, we assume it's being run for (un)installation,
+# upgrade, or instructions.
 if [ "$#" -eq 0 ]; then
-    echo "No arguments detected. Proceeding with installation..."
+    if [ -f "$INSTALL_PATH" ]; then
+        echo "Launcher Launcher is already installed at $INSTALL_PATH."
+        echo "What would you like to do?"
+        echo "  [R]einstall (upgrade)"
+        echo "  [U]ninstall"
+        echo "  [I]nstructions and exit"
+        read -p "Enter your choice [R/U/I]: " -n 1 -r
+        echo
+        case "$REPLY" in
+            [Rr])
+                # Compare version lines (3rd line) between current script and installed script
+                CURRENT_VERSION_LINE=$(sed -n '3p' "$0")
+                if [ -f "$INSTALL_PATH" ]; then
+                    INSTALLED_VERSION_LINE=$(sed -n '3p' "$INSTALL_PATH")
+                else
+                    INSTALLED_VERSION_LINE=""
+                fi
+
+                if [ "$CURRENT_VERSION_LINE" = "$INSTALLED_VERSION_LINE" ]; then
+                    echo "-> Version is unchanged. Reinstalling."
+                else
+                    echo "-> Detected version change:"
+                    echo "   Installed: $INSTALLED_VERSION_LINE"
+                    echo "   New:       $CURRENT_VERSION_LINE"
+                    echo "-> Changing script and .desktop file."
+                fi
+                ;;
+            [Uu])
+                echo "-> Uninstalling..."
+                rm -f "$INSTALL_PATH"
+                rm -f "$DESKTOP_FILE_PATH"
+                echo "-> Removed $INSTALL_PATH and $DESKTOP_FILE_PATH"
+                echo "Uninstallation complete."
+                exit 0
+                ;;
+            *)
+                echo
+                echo "Launcher Launcher is already installed."
+                echo "To reinstall or upgrade to a new copy of this script, run this (new) script and choose 'R'."
+                echo "To uninstall, run this script and choose 'U'."
+                echo "To use launcher_launcher.sh:"
+                echo "  - Drag and drop executable files onto the desktop shortcut to install them."
+                echo "  - Or run this script with the paths to executables as arguments."
+                echo "  Example:"
+                echo "    $ $SCRIPT_NAME /path/to/executable1 /path/to/executable2"
+                echo "If the files are not executable, you will be asked if you want to make them so."
+                echo "If you opt not to, the file will be skipped."
+                echo "If you need to change any details of the installed application (name, icon, etc.),"
+                echo "you can edit the corresponding .desktop files which the script prints out for you."
+                echo
+                read -p "Press Enter to exit..." dummy
+                exit 0
+                ;;
+        esac
+    fi
 
     # 1. Ensure the target directories exist.
     mkdir -p "$INSTALL_DIR"
@@ -35,9 +90,14 @@ if [ "$#" -eq 0 ]; then
     echo "-> Ensured directories exist: $INSTALL_DIR and $APPS_DIR"
 
     # 2. Copy this script to the installation path and make it executable.
-    cp "$0" "$INSTALL_PATH"
-    chmod +x "$INSTALL_PATH"
-    echo "-> Script installed to $INSTALL_PATH"
+    # If already running from ~/.local/bin/, skip copying and chmod
+    if [ "$(dirname "$(realpath "$0")")" = "$INSTALL_DIR" ]; then
+        echo "-> Script is already running from $INSTALL_DIR, reinstalling .desktop file only."
+    else
+        cp "$0" "$INSTALL_PATH"
+        chmod +x "$INSTALL_PATH"
+        echo "-> Script installed to $INSTALL_PATH"
+    fi
 
     # 3. Create the .desktop file to make it appear in application launchers.
     echo "-> Creating desktop entry at $DESKTOP_FILE_PATH"
@@ -64,7 +124,6 @@ EOF
     echo # Move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         if [ -d "$HOME/Desktop" ]; then
-            # Use a more descriptive name for the shortcut
             ln -s "$INSTALL_PATH" "$HOME/Desktop/Install Application"
             echo "-> Shortcut created at '$HOME/Desktop/Install Application'."
         else
