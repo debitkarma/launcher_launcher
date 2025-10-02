@@ -138,6 +138,8 @@ fi
 # It iterates through each argument, treating it as an executable to install.
 echo "--- Application Installer Mode ---"
 
+for app_path in "$@"; do
+
     if [ ! -f "$app_path" ]; then
         echo "Warning: '$app_path' is not a valid file. Skipping."
         continue
